@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.7.8/two.min.js"
+    integrity="sha512-mdGHODDp7TO7EFKoF9PR9GDzeovgcM/aTgf5uohS5AUS+/xF1x20JC1C02tzv1cAD1ze+SuQ3+4TVxallao44g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.1/gsap.min.js"></script>
+
+  <script src="./Keyboard.js"></script>
+  <script src="./Camera.js"></script>
+  <script src="./Terrain.js"></script>
+  <script src="./DynamicObject.js"></script>
+  <script src="./Ship.js"></script>
+  <script src="./utils.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    #container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .top {
+      position: absolute;
+      top:0.05em;
+    }
+
+    .bottom {
+      position: absolute;
+      bottom:1em;
+    }
+
+    .label-group {
+      margin-right: 1em;
+    }
+
+    .lg-label, .lg-value, .lg-sign {
+      margin-right: 0.2em;
+    }
+
+  </style>
+
+</head>
+
+<body scroll="no">
+  <div id="container">
+
+    <div id="app"></div>
+
+    <h4 class="top" id="status"></h4>
+    <div class="bottom" >
+      <span id="vy" class="label-group">
+        <span class="lg-label">vy</span><span class="lg-value">0</span><span class="lg-sign">+</span>
+      </span>
+      <span id="vx" class="label-group">
+        <span class="lg-label">vx</span><span class="lg-value">0</span><span class="lg-sign">+</span>
+      </span>
+      <span id="rotation" class="label-group">
+        <span class="lg-label">r</span><span class="lg-value">0</span><span class="lg-sign">+</span>
+      </span>
+    </div>
+
+  </div>
+</body>
+<script src="app.js"></script>
+
+</html>
