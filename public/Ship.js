@@ -12,6 +12,8 @@ class Ship extends DynamicObject {
     // actual LEM radius is about 2 meters, so app units is 10px per meter, or 0.1 meters per px
 
     this.engineLevel = 0;
+    this.fuelLevel = 1000
+
     this.v = new Two.Vector(0, 0);
     this.rotation = 0;
   }
@@ -43,7 +45,14 @@ class Ship extends DynamicObject {
 
     const engineAcc = this.engineLevel / -8 * -DynamicObject.gravity;
     const ax = cosR * engineAcc;
-    const ay = (sinR * engineAcc) + DynamicObject.gravity; 
+    const ay = (sinR * engineAcc) + DynamicObject.gravity;
+
+    this.fuelLevel -= this.engineLevel / 20
+    if ( this.fuelLevel < 0 ) {
+      this.fuelLevel = 0
+      this.engineLevel = 0
+    }
+
     return new Two.Vector(ax, ay);
   }
 
@@ -128,6 +137,7 @@ class Ship extends DynamicObject {
     this.stopped = false;
     this.translation.addSelf({x:0,y:-2})
     this.v.y = -0.1;
+    this.fuelLevel = 1000
   }
 
   crash () {
@@ -241,7 +251,7 @@ class Chunk extends DynamicObject {
     for (let theta=0; theta<Math.PI*2; theta+= dTheta) {
       let magnitude = 2 + Math.random() * 8;
       let x = Math.cos(theta) * magnitude, y = Math.sin(theta)*magnitude;
-      anchors.push(new Two.Anchor(x,y)); 
+      anchors.push(new Two.Anchor(x,y));
     }
     this.group = new Two.Path(anchors, true);
 
