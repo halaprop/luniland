@@ -36,7 +36,7 @@ class LuniTwo {
     this.vxLabel = new Label('vx', { label: 'v<sub>x</sub>', plusSign: '→', minusSign: '←'  });
     this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑'  });
     this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺'  });
-    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-'  });
+    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-', roundTo: 0 });
 
     this.state = this.startingState;
   }
@@ -89,7 +89,7 @@ class LuniTwo {
     this.vxLabel.setNumber(landable.vx * 100, landable.vxOkay ? 'black' : 'red');
     this.vyLabel.setNumber(landable.vy * 100, landable.vyOkay ? 'black' : 'red');
     this.rtLabel.setNumber(landable.rotation, landable.rotationOkay ? 'black' : 'red');
-    this.fuelLabel.setNumber( this.ship.fuelLevel, this.ship.fuelLevel > 250 ? 'black' : 'red');
+    this.fuelLabel.setNumber(landable.fuelLevel, landable.fuelOkay ? 'black' : 'red');
 
     const nextState = { flying: this.flyingState, landing: this.landingState, crashing: this.crashingState };
     const hitTest = this.ship.hitTest(this.terrain);
@@ -109,6 +109,7 @@ class LuniTwo {
     const y = this.terrain.horizonAtX(this.ship.translation.x).y;
     this.ship.land(y);
     this.statusLabel.showHTML(kLandMsg, 10000);
+    this.fuelLabel.setNumber(this.ship.fuelLevel, 'black');
 
     return this.ship.stopped ? this.idleState : this.landingState;
   }

@@ -44,7 +44,7 @@ class Ship extends DynamicObject {
     const cosR = Math.cos(r);
 
     this.fuelLevel -= this.engineLevel / 20
-    if ( this.fuelLevel < 0 ) {
+    if (this.fuelLevel < 0) {
       this.fuelLevel = 0
       this.engineLevel = 0
     }
@@ -52,7 +52,6 @@ class Ship extends DynamicObject {
     const engineAcc = this.engineLevel / -8 * -DynamicObject.gravity;
     const ax = cosR * engineAcc;
     const ay = (sinR * engineAcc) + DynamicObject.gravity;
-
 
     return new Two.Vector(ax, ay);
   }
@@ -72,11 +71,15 @@ class Ship extends DynamicObject {
     const vx = this.v.x;
     const vy = this.v.y;
     const rotation = this.rotation;
+    const fuelLevel = this.fuelLevel;
+
     const vxOkay = Math.abs(vx) < 0.007;
     const vyOkay = vy < 0.02;
     const rotationOkay = Math.abs(rotation) < 0.3;
+    const fuelOkay = this.fuelLevel > 250;
     const allOkay = vxOkay && vyOkay && rotationOkay;
-    return { vx, vy, rotation, vxOkay, vyOkay ,rotationOkay, allOkay };
+
+    return { vx, vy, rotation, fuelLevel, vxOkay, vyOkay, rotationOkay, fuelOkay, allOkay };
   }
 
   hitTest(terrain) {
@@ -137,8 +140,8 @@ class Ship extends DynamicObject {
   launch() {
     this.stopped = false;
     this.translation.addSelf({x:0,y:-2})
+    this.fuelLevel = 1000;
     this.v.y = -0.1;
-    this.fuelLevel = 1000
   }
 
   crash () {

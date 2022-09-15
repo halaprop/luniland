@@ -101,7 +101,7 @@ class Label {
 
     this.plusSign = options.plusSign || '+';
     this.minusSign = options.minusSign || '-';
-    this.roundTo = options.roundTo || 2;
+    this.roundTo = options.roundTo === undefined ? 2 : options.roundTo;
     
     if (options.label) this.labelDiv.innerHTML = options.label;
   }
