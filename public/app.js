@@ -36,7 +36,7 @@ class LuniTwo {
     this.vxLabel = new Label('vx', { label: 'v<sub>x</sub>', plusSign: '→', minusSign: '←'  });
     this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑'  });
     this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺'  });
-    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '↻', minusSign: '↺'  });
+    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-'  });
 
     this.state = this.startingState;
   }

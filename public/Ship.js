@@ -43,15 +43,16 @@ class Ship extends DynamicObject {
     const sinR = Math.sin(r);
     const cosR = Math.cos(r);
 
-    const engineAcc = this.engineLevel / -8 * -DynamicObject.gravity;
-    const ax = cosR * engineAcc;
-    const ay = (sinR * engineAcc) + DynamicObject.gravity;
-
     this.fuelLevel -= this.engineLevel / 20
     if ( this.fuelLevel < 0 ) {
       this.fuelLevel = 0
       this.engineLevel = 0
     }
+
+    const engineAcc = this.engineLevel / -8 * -DynamicObject.gravity;
+    const ax = cosR * engineAcc;
+    const ay = (sinR * engineAcc) + DynamicObject.gravity;
+
 
     return new Two.Vector(ax, ay);
   }
