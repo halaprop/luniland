@@ -104,16 +104,31 @@ class Label {
     this.roundTo = options.roundTo === undefined ? 2 : options.roundTo;
     
     if (options.label) this.labelDiv.innerHTML = options.label;
+    this.theme = options.theme;
   }
 
-  setNumber(number, color='black') {
+  set theme(theme) {
+    this._theme = theme;
+    this.div.style.color = theme.label.color;
+  }
+
+  get theme() {
+    return this._theme;
+  }
+
+  set scale(scale) {
+    this.group.scale = scale
+    this.group.linewidth = 1 / scale;
+  }
+
+  setNumber(number, nominal=true) {
     if (this.signDiv) {
       this.valueDiv.innerText = Math.abs(number).toFixed(this.roundTo);
       this.signDiv.innerText = number > 0 ? this.plusSign : this.minusSign;
     } else {
       this.valueDiv.innerText = number.toFixed(this.roundTo);
     }
-    this.div.style.color = color;
+    this.div.style.color = nominal ? this.theme.label.color : this.theme.label.danger;
   }
 
   showHTML(html, hideAfter=null) {

@@ -6,7 +6,7 @@ const kPadHeight = 4
 
 class Terrain {
 
-  constructor(two, xPos, width, amplitude, padCount) {
+  constructor(two, xPos, width, amplitude, padCount, theme) {
     this.xPos = xPos;
     this.width = width;
 
@@ -22,12 +22,22 @@ class Terrain {
     const bl = new Two.Anchor(this.anchors[0].x, amplitude * 2);
     const br = new Two.Anchor(this.anchors[this.anchors.length-1].x, amplitude * 2);
     this.path = new Two.Path([...this.anchors, br, bl], true);
-    this.path.fill = 'rgb(240,240,240)'
 
     const group = new Two.Group(this.path);    
     this.createPadsAndHorizon(padCount, group);
 
     two.add(group);
+    this.theme = theme;
+  }
+
+  set theme(theme) {
+    this._theme = theme;
+    this.path.fill = theme.terrain.fill;
+    this.path.stroke = theme.terrain.stroke;
+  }
+
+  get theme() {
+    return this._theme;
   }
 
   indexNear(translation, truncate=Math.floor) {
@@ -45,8 +55,8 @@ class Terrain {
   createPadsAndHorizon(count, group) {
     const newPad = (x,y) => {
       const shape = new Two.Rectangle(x, y+0.5*kPadHeight, kPadWidth, kPadHeight);
-      shape.fill = 'grey';
-      shape.stroke = 'yellow'
+      //shape.fill = 'grey';
+      //shape.stroke = 'yellow'
       return shape;
     }
     const padStride = this.width / (count+1);

@@ -5,6 +5,20 @@ const kStartMsg = 'Land the ship on the flat pads. Use left/right arrows to rota
 const kLandMsg = 'The Eagle has landed! Increase thrust to take off again.';
 const kCrashMsg = 'You just blew a billion dollar hole in NASA\'s budget. Sad!<br\>(reload to try again)';
 
+const darkTheme = {
+  sky: 'black',
+  label: { color: 'white', danger: 'red' },
+  ship: { fill: 'black', stroke: 'white' },
+  terrain: { fill: '#404040', stroke: 'white' }
+};
+
+const lightTheme = {
+  sky: 'white',
+  label: { color: 'black', danger: 'red' },
+  ship: { fill: 'white', stroke: 'black' },
+  terrain: { fill: '#F0F0F0', stroke: 'black' }
+};
+
 class LuniTwo {
   constructor() {
     this.two = new Two({
@@ -30,13 +44,17 @@ class LuniTwo {
       down: () => this.ship.engineLevel -= 1
     });
 
-    this.statusLabel = new Label('status');
+    this.theme = lightTheme;
+
+    this.statusLabel = new Label('status', { theme: this.theme });
     this.statusLabel.showHTML(kStartMsg, 7000);
 
-    this.vxLabel = new Label('vx', { label: 'v<sub>x</sub>', plusSign: '→', minusSign: '←'  });
-    this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑'  });
-    this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺'  });
-    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-', roundTo: 0 });
+    this.vxLabel = new Label('vx', { label: 'v<sub>x</sub>', plusSign: '→', minusSign: '←', theme: this.theme });
+    this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑', theme: this.theme });
+    this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺', theme: this.theme });
+    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-', roundTo: 0, theme: this.theme });
+    this.themeLabel = new Label('theme', { label: 'Toggle Dark', theme: this.theme });
+    this.labels = [ this.statusLabel, this.vxLabel, this.vyLabel, this.rtLabel, this.fuelLabel, this.themeLabel];
 
     this.state = this.startingState;
   }
@@ -47,10 +65,19 @@ class LuniTwo {
     this.two.update()
   }
 
+  toggleTheme() {
+    this.theme = !this.theme || this.theme === darkTheme ? lightTheme : darkTheme;
+
+    this.two.renderer.domElement.style.background = this.theme.sky;
+    if (this.ship) this.ship.theme = this.theme;
+    if (this.terrain) this.terrain.theme = this.theme;
+    this.labels.forEach(label => label.theme = this.theme);
+  }
+
   // each game state method performs an action for that state and returns a next state
   startingState() {
-    this.terrain = new Terrain(this.two, -8192, 16384, this.two.height, 16);
-    this.ship = new Ship(this.two, 0, -1200);
+    this.terrain = new Terrain(this.two, -8192, 16384, this.two.height, 16, this.theme);
+    this.ship = new Ship(this.two, 0, -1200, this.theme);
     this.ship.rotation = Math.PI/2;
     this.ship.v = new Two.Vector(0.1, 0.0);
     this.camera = new Camera(this.two, this.cameraTransform());
@@ -86,10 +113,10 @@ class LuniTwo {
 
     // App calculates in px/ms.  px/ms * m/px * s/ms = m/s (???)
     const landable = this.ship.landable();
-    this.vxLabel.setNumber(landable.vx * 100, landable.vxOkay ? 'black' : 'red');
-    this.vyLabel.setNumber(landable.vy * 100, landable.vyOkay ? 'black' : 'red');
-    this.rtLabel.setNumber(landable.rotation, landable.rotationOkay ? 'black' : 'red');
-    this.fuelLabel.setNumber(landable.fuelLevel, landable.fuelOkay ? 'black' : 'red');
+    this.vxLabel.setNumber(landable.vx * 100, landable.vxOkay);
+    this.vyLabel.setNumber(landable.vy * 100, landable.vyOkay);
+    this.rtLabel.setNumber(landable.rotation, landable.rotationOkay);
+    this.fuelLabel.setNumber(landable.fuelLevel, landable.fuelOkay);
 
     const nextState = { flying: this.flyingState, landing: this.landingState, crashing: this.crashingState };
     const hitTest = this.ship.hitTest(this.terrain);
@@ -109,7 +136,9 @@ class LuniTwo {
     const y = this.terrain.horizonAtX(this.ship.translation.x).y;
     this.ship.land(y);
     this.statusLabel.showHTML(kLandMsg, 10000);
-    this.fuelLabel.setNumber(this.ship.fuelLevel, 'black');
+
+    const landable = this.ship.landable();
+    this.fuelLabel.setNumber(landable.fuelLevel, landable.fuelOkay);
 
     return this.ship.stopped ? this.idleState : this.landingState;
   }

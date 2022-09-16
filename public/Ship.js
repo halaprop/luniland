@@ -1,7 +1,7 @@
 'use strict';
 
 class Ship extends DynamicObject {
-  constructor(two, x = 0, y = 0) {
+  constructor(two, x = 0, y = 0, theme) {
     super();
     this.group = this.buildGroup();
     two.add(this.group);
@@ -16,6 +16,18 @@ class Ship extends DynamicObject {
 
     this.v = new Two.Vector(0, 0);
     this.rotation = 0;
+    this.theme = theme;
+  }
+
+  set theme(theme) {
+    this._theme = theme;
+    this.group.fill = theme.ship.fill;
+    this.group.stroke = theme.ship.stroke;
+    this.engineLevel = this.engineLevel;
+  }
+
+  get theme() {
+    return this._theme;
   }
 
   set scale(scale) {
@@ -232,6 +244,17 @@ class Debris {
     this.group = new Two.Group(this.chunks.map(c => c.group));
     this.group.translation = new Two.Vector(position.x, position.y)
   }
+
+  set theme(theme) {
+    this._theme = theme;
+    this.group.fill = theme.ship.fill;
+    this.group.stroke = theme.ship.stroke;
+  }
+
+  get theme() {
+    return this._theme;
+  }
+
 
   tick() {
     this.chunks = this.chunks.filter(chunk => {
