@@ -83,6 +83,12 @@ class LuniTwo {
     this.theme = this.theme === darkTheme ? lightTheme : darkTheme;
   }
 
+  toggleFuelConstraint(event) {
+    const checkbox = event.target;
+    this.ship.isFuelConstrained = checkbox.checked;
+    checkbox.blur()
+  }
+
   // each game state method performs an action for that state and returns a next state
   startingState() {
     this.terrain = new Terrain(this.two, -8192, 16384, this.two.height, 16, this.theme);

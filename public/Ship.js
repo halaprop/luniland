@@ -12,7 +12,8 @@ class Ship extends DynamicObject {
     // actual LEM radius is about 2 meters, so app units is 10px per meter, or 0.1 meters per px
 
     this.engineLevel = 0;
-    this.fuelLevel = 1000
+    this.isFuelConstrained  = false;
+    this.fuelLevel = 1000;
 
     this.v = new Two.Vector(0, 0);
     this.rotation = 0;
@@ -55,10 +56,12 @@ class Ship extends DynamicObject {
     const sinR = Math.sin(r);
     const cosR = Math.cos(r);
 
-    this.fuelLevel -= this.engineLevel / 20
-    if (this.fuelLevel < 0) {
-      this.fuelLevel = 0
-      this.engineLevel = 0
+    if (this.isFuelConstrained ) {
+      this.fuelLevel -= this.engineLevel / 20
+      if (this.fuelLevel < 0) {
+        this.fuelLevel = 0
+        this.engineLevel = 0
+      }
     }
 
     const engineAcc = this.engineLevel / -8 * -DynamicObject.gravity;
