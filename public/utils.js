@@ -116,9 +116,8 @@ class Label {
     return this._theme;
   }
 
-  set scale(scale) {
-    this.group.scale = scale
-    this.group.linewidth = 1 / scale;
+  setLabel(text) {
+    this.labelDiv.innerText = text;
   }
 
   setNumber(number, nominal=true) {

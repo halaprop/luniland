@@ -44,19 +44,33 @@ class LuniTwo {
       down: () => this.ship.engineLevel -= 1
     });
 
-    this.theme = lightTheme;
-
-    this.statusLabel = new Label('status', { theme: this.theme });
+    let theme = lightTheme;
+    this.statusLabel = new Label('status', { theme });
     this.statusLabel.showHTML(kStartMsg, 7000);
 
-    this.vxLabel = new Label('vx', { label: 'v<sub>x</sub>', plusSign: '→', minusSign: '←', theme: this.theme });
-    this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑', theme: this.theme });
-    this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺', theme: this.theme });
-    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-', roundTo: 0, theme: this.theme });
-    this.themeLabel = new Label('theme', { label: 'Toggle Dark', theme: this.theme });
+    this.vxLabel = new Label('vx', { label: 'v<sub>x</sub>', plusSign: '→', minusSign: '←', theme });
+    this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑', theme });
+    this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺', theme });
+    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-', roundTo: 0, theme });
+    this.themeLabel = new Label('theme', { label: '', theme });
     this.labels = [ this.statusLabel, this.vxLabel, this.vyLabel, this.rtLabel, this.fuelLabel, this.themeLabel];
 
+    this.theme = theme;
     this.state = this.startingState;
+  }
+
+  set theme(theme) {
+    this._theme = theme;
+
+    this.two.renderer.domElement.style.background = theme.sky;
+    if (this.ship) this.ship.theme = theme;
+    if (this.terrain) this.terrain.theme = theme;
+    this.labels.forEach(label => label.theme = theme);
+    this.themeLabel.setLabel(this.theme === darkTheme ? 'Light' : 'Dark');
+  }
+
+  get theme() {
+    return this._theme;
   }
 
   resize() {
@@ -66,12 +80,7 @@ class LuniTwo {
   }
 
   toggleTheme() {
-    this.theme = !this.theme || this.theme === darkTheme ? lightTheme : darkTheme;
-
-    this.two.renderer.domElement.style.background = this.theme.sky;
-    if (this.ship) this.ship.theme = this.theme;
-    if (this.terrain) this.terrain.theme = this.theme;
-    this.labels.forEach(label => label.theme = this.theme);
+    this.theme = this.theme === darkTheme ? lightTheme : darkTheme;
   }
 
   // each game state method performs an action for that state and returns a next state
