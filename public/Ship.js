@@ -56,12 +56,11 @@ class Ship extends DynamicObject {
     const sinR = Math.sin(r);
     const cosR = Math.cos(r);
 
-    if (this.isFuelConstrained ) {
-      this.fuelLevel -= this.engineLevel / 20
-      if (this.fuelLevel < 0) {
-        this.fuelLevel = 0
-        this.engineLevel = 0
-      }
+    this.fuelLevel -= this.engineLevel / 20;
+    this.fuelLevel = Math.max(0, this.fuelLevel);
+    
+    if (this.isFuelConstrained && this.fuelLevel === 0) {
+      this.engineLevel = 0
     }
 
     const engineAcc = this.engineLevel / -8 * -DynamicObject.gravity;
@@ -91,7 +90,7 @@ class Ship extends DynamicObject {
     const vxOkay = Math.abs(vx) < 0.007;
     const vyOkay = vy < 0.02;
     const rotationOkay = Math.abs(rotation) < 0.3;
-    const fuelOkay = this.fuelLevel > 250;
+    const fuelOkay = !this.isFuelConstrained || this.fuelLevel > 250;
     const allOkay = vxOkay && vyOkay && rotationOkay;
 
     return { vx, vy, rotation, fuelLevel, vxOkay, vyOkay, rotationOkay, fuelOkay, allOkay };
