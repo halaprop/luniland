@@ -120,6 +120,10 @@ class Label {
     this.labelDiv.innerText = text;
   }
 
+  setHidden(hidden) {
+    this.div.hidden = hidden;
+  }
+
   setNumber(number, nominal=true) {
     if (this.signDiv) {
       this.valueDiv.innerText = Math.abs(number).toFixed(this.roundTo);

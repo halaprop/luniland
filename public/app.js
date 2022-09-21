@@ -52,8 +52,10 @@ class LuniTwo {
     this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑', theme });
     this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺', theme });
     this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-', roundTo: 0, theme });
-    this.themeLabel = new Label('theme', { label: '', theme });
-    this.labels = [ this.statusLabel, this.vxLabel, this.vyLabel, this.rtLabel, this.fuelLabel, this.themeLabel];
+    this.labels = [ this.statusLabel, this.vxLabel, this.vyLabel, this.rtLabel, this.fuelLabel ];
+
+    this.themeToggle = document.getElementById('themeToggle');
+    this.fuelToggle = document.getElementById('fuelToggle');
 
     this.theme = theme;
     this.state = this.startingState;
@@ -65,8 +67,12 @@ class LuniTwo {
     this.two.renderer.domElement.style.background = theme.sky;
     if (this.ship) this.ship.theme = theme;
     if (this.terrain) this.terrain.theme = theme;
+
     this.labels.forEach(label => label.theme = theme);
-    this.themeLabel.setLabel(this.theme === darkTheme ? 'Light' : 'Dark');
+    this.themeToggle.style.color = theme.label.color;
+    this.fuelToggle.style.color = theme.label.color;
+
+    this.themeToggle.innerText = theme === darkTheme ? 'dark mode = on' : 'dark mode = off'
   }
 
   get theme() {
@@ -83,10 +89,15 @@ class LuniTwo {
     this.theme = this.theme === darkTheme ? lightTheme : darkTheme;
   }
 
-  toggleFuelConstraint(event) {
-    const checkbox = event.target;
-    this.ship.isFuelConstrained = checkbox.checked;
-    checkbox.blur()
+  set isFuelConstrained(constrain) {
+    this.ship.isFuelConstrained = constrain;
+
+    this.fuelToggle.innerHTML = constrain ? 'fuel budget = on' : 'fuel budget = off'
+    this.fuelLabel.setHidden(!constrain);
+  }
+
+  toggleFuelConstraint() {
+    this.isFuelConstrained = !this.ship.isFuelConstrained
   }
 
   // each game state method performs an action for that state and returns a next state
@@ -95,6 +106,8 @@ class LuniTwo {
     this.ship = new Ship(this.two, 0, -1200, this.theme);
     this.ship.rotation = Math.PI/2;
     this.ship.v = new Two.Vector(0.1, 0.0);
+    this.isFuelConstrained = true;
+
     this.camera = new Camera(this.two, this.cameraTransform());
     return this.flyingState;
   }
