@@ -57,6 +57,8 @@ class LuniTwo {
     this.fuelToggle = document.getElementById('fuelToggle');
 
     this.theme = lightTheme;
+    this.isFuelConstrained = false;
+
     this.state = this.startingState;
   }
 
@@ -69,10 +71,10 @@ class LuniTwo {
   set theme(theme) {
     this._theme = theme;
     this.themeToggle.querySelector('input').checked = theme === darkTheme;
+
     this.two.renderer.domElement.style.background = theme.sky;
     if (this.ship) this.ship.theme = theme;
     if (this.terrain) this.terrain.theme = theme;
-
     this.labels.forEach(label => label.theme = theme);
     this.themeToggle.style.color = theme.label.color;
     this.fuelToggle.style.color = theme.label.color;
@@ -88,13 +90,15 @@ class LuniTwo {
   }
 
   set isFuelConstrained(constrain) {
-    this.ship.isFuelConstrained = constrain;
+    this._isFuelConstrained = constrain;
     this.fuelToggle.querySelector('input').checked = constrain;
+
+    if (this.ship) this.ship.isFuelConstrained = constrain;
     this.fuelLabel.setHidden(!constrain);
   }
 
   get isFuelConstrained() {
-    return this.ship && this.ship.isFuelConstrained;
+    return this._isFuelConstrained;
   }
 
   clickedFuelConstraint(event) {
@@ -108,7 +112,7 @@ class LuniTwo {
     this.ship = new Ship(this.two, 0, -1200, this.theme);
     this.ship.rotation = Math.PI/2;
     this.ship.v = new Two.Vector(0.1, 0.0);
-    this.isFuelConstrained = true;
+    this.ship.isFuelConstrained = this.isFuelConstrained;
 
     this.camera = new Camera(this.two, this.cameraTransform());
     return this.flyingState;
