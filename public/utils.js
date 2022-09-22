@@ -104,7 +104,7 @@ class Label {
     this.roundTo = options.roundTo === undefined ? 2 : options.roundTo;
     
     if (options.label) this.labelDiv.innerHTML = options.label;
-    this.theme = options.theme;
+    if (options.theme) this.theme = options.theme;
   }
 
   set theme(theme) {

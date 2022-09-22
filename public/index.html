@@ -20,6 +20,7 @@
         #status { position: absolute; top:0.05em; width: 60%; }
         #themeToggle { position: absolute; top: 10px; right: 15px; cursor: pointer; }
         #fuelToggle { position: absolute; top: 32px; right: 15px; cursor: pointer; }
+        .check { outline: none; }
         .bottom { position: absolute; bottom:1em; width: 100%; }
         .bottom-right { position: absolute; bottom:0.5em; right: 1em; }
         .label-group { margin-right: 1em; }
@@ -38,12 +39,14 @@
       <div id="app"></div>
       <h2 id="status"></h2>
 
-      <p id="themeToggle" class="noselect" onclick="luniTwo.toggleTheme()">
-        Dark
-      </p>
-      <p id="fuelToggle" class="noselect" onclick="luniTwo.toggleFuelConstraint()">
-        Unlimited Fuel
-      </p>
+      <div id="themeToggle">
+        <input type="checkbox" class="check" id="check0" onclick="luniTwo.clickedTheme(event)"/>
+        <label for="check0">dark theme</label>
+      </div>
+      <div id="fuelToggle">
+        <input type="checkbox" class="check" id="check1" onclick="luniTwo.clickedFuelConstraint(event)"/>
+        <label for="check1">fuel budget</label>
+      </div>
       <div class="bottom noselect" >
         <span id="vy" class="label-group">
           <span class="lg-label">vy</span><span class="lg-value">0</span><span class="lg-sign">+</span>

@@ -44,39 +44,20 @@ class LuniTwo {
       down: () => this.ship.engineLevel -= 1
     });
 
-    let theme = lightTheme;
-    this.statusLabel = new Label('status', { theme });
+    this.statusLabel = new Label('status');
     this.statusLabel.showHTML(kStartMsg, 7000);
 
-    this.vxLabel = new Label('vx', { label: 'v<sub>x</sub>', plusSign: '→', minusSign: '←', theme });
-    this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑', theme });
-    this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺', theme });
-    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-', roundTo: 0, theme });
+    this.vxLabel = new Label('vx', { label: 'v<sub>x</sub>', plusSign: '→', minusSign: '←' });
+    this.vyLabel = new Label('vy', { label: 'v<sub>y</sub>', plusSign: '↓', minusSign: '↑' });
+    this.rtLabel = new Label('rotation', { label: 'r:', plusSign: '↻', minusSign: '↺' });
+    this.fuelLabel = new Label('fuel', { label: 'fuel:', plusSign: '', minusSign: '-', roundTo: 0 });
     this.labels = [ this.statusLabel, this.vxLabel, this.vyLabel, this.rtLabel, this.fuelLabel ];
 
     this.themeToggle = document.getElementById('themeToggle');
     this.fuelToggle = document.getElementById('fuelToggle');
 
-    this.theme = theme;
+    this.theme = lightTheme;
     this.state = this.startingState;
-  }
-
-  set theme(theme) {
-    this._theme = theme;
-
-    this.two.renderer.domElement.style.background = theme.sky;
-    if (this.ship) this.ship.theme = theme;
-    if (this.terrain) this.terrain.theme = theme;
-
-    this.labels.forEach(label => label.theme = theme);
-    this.themeToggle.style.color = theme.label.color;
-    this.fuelToggle.style.color = theme.label.color;
-
-    this.themeToggle.innerText = theme === darkTheme ? 'dark mode = on' : 'dark mode = off'
-  }
-
-  get theme() {
-    return this._theme;
   }
 
   resize() {
@@ -85,19 +66,40 @@ class LuniTwo {
     this.two.update()
   }
 
-  toggleTheme() {
-    this.theme = this.theme === darkTheme ? lightTheme : darkTheme;
+  set theme(theme) {
+    this._theme = theme;
+    this.themeToggle.querySelector('input').checked = theme === darkTheme;
+    this.two.renderer.domElement.style.background = theme.sky;
+    if (this.ship) this.ship.theme = theme;
+    if (this.terrain) this.terrain.theme = theme;
+
+    this.labels.forEach(label => label.theme = theme);
+    this.themeToggle.style.color = theme.label.color;
+    this.fuelToggle.style.color = theme.label.color;
+  }
+
+  get theme() {
+    return this._theme;
+  }
+
+  clickedTheme(event) {
+    const {checked} = event.target;
+    this.theme = checked ? darkTheme : lightTheme;
   }
 
   set isFuelConstrained(constrain) {
     this.ship.isFuelConstrained = constrain;
-
-    this.fuelToggle.innerHTML = constrain ? 'fuel budget = on' : 'fuel budget = off'
+    this.fuelToggle.querySelector('input').checked = constrain;
     this.fuelLabel.setHidden(!constrain);
   }
 
-  toggleFuelConstraint() {
-    this.isFuelConstrained = !this.ship.isFuelConstrained
+  get isFuelConstrained() {
+    return this.ship && this.ship.isFuelConstrained;
+  }
+
+  clickedFuelConstraint(event) {
+    const {checked} = event.target;
+    this.isFuelConstrained = checked;
   }
 
   // each game state method performs an action for that state and returns a next state
