@@ -6,6 +6,7 @@ const kLandMsg = 'The Eagle has landed! Increase thrust to take off again.';
 const kCrashMsg = 'You just blew a billion dollar hole in NASA\'s budget. Sad!<br\>(reload to try again)';
 
 const darkTheme = {
+  name: 'dark',
   sky: 'black',
   label: { color: 'white', danger: 'red' },
   ship: { fill: 'black', stroke: 'white' },
@@ -13,6 +14,7 @@ const darkTheme = {
 };
 
 const lightTheme = {
+  name: 'light',
   sky: 'white',
   label: { color: 'black', danger: 'red' },
   ship: { fill: 'white', stroke: 'black' },
@@ -56,8 +58,9 @@ class LuniTwo {
     this.themeToggle = document.getElementById('themeToggle');
     this.fuelToggle = document.getElementById('fuelToggle');
 
-    this.theme = lightTheme;
-    this.isFuelConstrained = false;
+    // initialize prefs from local storage
+    this.theme = this.theme;
+    this.isFuelConstrained = this.isFuelConstrained;
 
     this.state = this.startingState;
   }
@@ -69,7 +72,7 @@ class LuniTwo {
   }
 
   set theme(theme) {
-    this._theme = theme;
+    window.localStorage.setItem('theme', theme.name);
     this.themeToggle.querySelector('input').checked = theme === darkTheme;
 
     this.two.renderer.domElement.style.background = theme.sky;
@@ -81,7 +84,7 @@ class LuniTwo {
   }
 
   get theme() {
-    return this._theme;
+    return window.localStorage.getItem('theme') === 'dark' ? darkTheme : lightTheme;
   }
 
   clickedTheme(event) {
@@ -90,7 +93,7 @@ class LuniTwo {
   }
 
   set isFuelConstrained(constrain) {
-    this._isFuelConstrained = constrain;
+    window.localStorage.setItem('isFuelConstrained', JSON.stringify(constrain));
     this.fuelToggle.querySelector('input').checked = constrain;
 
     if (this.ship) this.ship.isFuelConstrained = constrain;
@@ -98,7 +101,7 @@ class LuniTwo {
   }
 
   get isFuelConstrained() {
-    return this._isFuelConstrained;
+    return window.localStorage.getItem('isFuelConstrained') === 'true';
   }
 
   clickedFuelConstraint(event) {
