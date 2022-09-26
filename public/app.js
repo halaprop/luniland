@@ -98,10 +98,19 @@ class LuniTwo {
 
     if (this.ship) this.ship.isFuelConstrained = constrain;
     this.fuelLabel.setHidden(!constrain);
+    this.flightIsFuelConstrained = this.flightIsFuelConstrained && constrain;
   }
 
   get isFuelConstrained() {
     return window.localStorage.getItem('isFuelConstrained') === 'true';
+  }
+
+  set fuelRecord(fuelRecord) {
+    window.localStorage.setItem('fuelRecord', JSON.stringify(Math.round(fuelRecord)));
+  }
+
+  get fuelRecord() {
+    return parseInt(window.localStorage.getItem('fuelRecord') || '0');
   }
 
   clickedFuelConstraint(event) {
@@ -116,6 +125,7 @@ class LuniTwo {
     this.ship.rotation = Math.PI/2;
     this.ship.v = new Two.Vector(0.1, 0.0);
     this.ship.isFuelConstrained = this.isFuelConstrained;
+    this.flightIsFuelConstrained = this.isFuelConstrained;
 
     this.camera = new Camera(this.two, this.cameraTransform());
     return this.flyingState;
@@ -172,12 +182,30 @@ class LuniTwo {
   landingState() {
     const y = this.terrain.horizonAtX(this.ship.translation.x).y;
     this.ship.land(y);
-    this.statusLabel.showHTML(kLandMsg, 10000);
 
     const landable = this.ship.landable();
     this.fuelLabel.setNumber(landable.fuelLevel, landable.fuelOkay);
 
-    return this.ship.stopped ? this.idleState : this.landingState;
+    if (this.ship.stopped) {
+      if (this.flightIsFuelConstrained) {
+        const remainingFuel = Math.round(this.ship.fuelLevel);
+        if (remainingFuel > this.fuelRecord) {
+          let msg = `The Eagle has landed, setting a new remaining fuel record of ${remainingFuel} units`;
+          msg += this.fuelRecord ? `, exceeding your prior record of ${this.fuelRecord} units!` : '!';
+          this.fuelRecord = remainingFuel;
+          this.statusLabel.showHTML(msg, 20000);
+        } else if (this.fuelRecord) {
+          let msg = 'The Eagle has landed!'
+          msg += this.fuelRecord ? ` Your best remaining fuel record remains at ${this.fuelRecord} units` : '';
+          this.statusLabel.showHTML(msg, 10000);
+        }
+      } else {
+        this.statusLabel.showHTML(kLandMsg, 10000);
+      }
+      return this.idleState;
+    } else {
+      return this.landingState;
+    }
   }
 
   idleState() {
@@ -185,6 +213,7 @@ class LuniTwo {
     if (this.ship.engineLevel > 4) {
       this.ship.launch();
       this.statusLabel.hideHTML(0);
+      this.flightIsFuelConstrained = this.isFuelConstrained;
       return this.flyingState;
     }
     return this.idleState
