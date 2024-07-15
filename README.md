@@ -5,7 +5,7 @@ A JavaSript homage to Atari's classic  Lunar Lander game.
 
 ## How To Play
 
-A running version is hosted at [luniland.halabe.com](https://luniland.halabe.com). To play, use the up / down arrows to control the ship's engine thrust and the left / right arrows to control the ship's orientation. Land on the flat pads; feet down, at a slow rate of descent and not too much lateral speed.
+A running version can be found at [luniland.halabe.com](https://luniland.halabe.com). To play, use the up / down arrows to control the ship's engine thrust and the left / right arrows to control the ship's orientation. Land on the flat pads; feet down, at a slow rate of descent and not too much lateral speed.
 
 Just like a real moon landing, it takes a few tries to get the hang of it. If your crash, reload the page and try again. If you land, increase  engine thrust to take off again.  Make sure you manage your fuel state because when you are out of fuel - you drop like a lunar rock!
 
