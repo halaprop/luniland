@@ -127,7 +127,7 @@ class LuniTwo {
     this.ship.isFuelConstrained = this.isFuelConstrained;
     this.flightIsFuelConstrained = this.isFuelConstrained;
 
-    this.camera = new Camera(this.two, this.cameraTransform());
+    this.camera = new Camera(this.two.renderer.domElement, this.cameraTransform());
     return this.flyingState;
   }
 
@@ -153,10 +153,7 @@ class LuniTwo {
 
   flyingState() {
     this.ship.tick();
-
-    const cameraTransform = this.cameraTransform()
-    this.camera.setTranslation(cameraTransform.translation);
-    this.camera.setScale(cameraTransform.scale);
+    this.camera.setTransform(this.cameraTransform());
 
     // App calculates in px/ms.  px/ms * m/px * s/ms = m/s (???)
     const landable = this.ship.landable();
